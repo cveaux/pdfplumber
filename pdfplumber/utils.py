@@ -47,6 +47,7 @@ def cluster_objects(objs, attr, tolerance):
 
     get_0, get_1 = itemgetter(0), itemgetter(1)
 
+    # tuples (obj, cluster) sorted by cluster value
     cluster_tuples = sorted(((obj, cluster_dict.get(attr_getter(obj)))
         for obj in objs), key=get_1)
 
@@ -80,7 +81,7 @@ def decimalize(v, q=None):
         return Decimal(int(v))
     # Convert float-like
     elif isinstance(v, numbers.Real):
-        if q != None:
+        if q is not None:
             return Decimal(repr(v)).quantize(Decimal(repr(q)),
                 rounding=ROUND_HALF_UP)
         else:
@@ -104,7 +105,7 @@ def collate_line(line_chars, tolerance=DEFAULT_X_TOLERANCE):
     coll = ""
     last_x1 = None
     for char in sorted(line_chars, key=itemgetter("x0")):
-        if (last_x1 != None) and (char["x0"] > (last_x1 + tolerance)):
+        if (last_x1 is not None) and (char["x0"] > (last_x1 + tolerance)):
             coll += " "
         last_x1 = char["x1"]
         coll += char["text"]
@@ -240,7 +241,7 @@ def objects_overlap(a, b):
     return obj_inside_bbox_score(a, bbox) > 0
 
 def clip_obj(obj, bbox, score=None):
-    if score == None:
+    if score is None:
         score = obj_inside_bbox_score(obj, bbox)
     if score == 0: return None
     if score == 4: return obj
@@ -426,9 +427,9 @@ def filter_edges(edges, orientation=None,
 
     def test(e):
         dim = "height" if e["orientation"] == "v" else "width"
-        et = (e["object_type"] == edge_type if edge_type != None else True)
+        et = (e["object_type"] == edge_type if edge_type is not None else True)
         return et & (
-            (True if orientation == None else (e["orientation"] == orientation)) & 
+            (True if orientation is None else (e["orientation"] == orientation)) &
             (e[dim] >= min_length)
         )
 

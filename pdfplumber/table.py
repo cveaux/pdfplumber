@@ -144,7 +144,7 @@ def words_to_edges_v(words,
             if utils.objects_overlap(rect, c):
                 overlap = True
                 break
-        if overlap == False:
+        if not overlap:
             condensed_rects.append(rect)
             
     if len(condensed_rects) == 0:
@@ -371,7 +371,7 @@ class Table(object):
                 if char_in_bbox(char, row.bbox) ]
 
             for cell in row.cells:
-                if cell == None:
+                if cell is None:
                     cell_text = None
                 else:
                     cell_chars = [ char for char in row_chars
@@ -416,7 +416,9 @@ class TableFinder(object):
 
     ... and inspired by Tabula: https://github.com/tabulapdf/tabula-extractor/issues/16
     """
-    def __init__(self, page, settings={}):
+    def __init__(self, page, settings=None):
+        if settings is None:
+            settings = {}
         for k in settings.keys():
             if k not in DEFAULT_TABLE_SETTINGS:
                 raise ValueError("Unrecognized table setting: '{0}'".format(
@@ -431,7 +433,7 @@ class TableFinder(object):
             ("intersection_x_tolerance", "intersection_tolerance"),
             ("intersection_y_tolerance", "intersection_tolerance"),
         ]:
-            if self.settings[var] == None:
+            if self.settings[var] is None:
                 self.settings.update({
                     var: self.settings[fallback]
                 })
@@ -468,10 +470,10 @@ class TableFinder(object):
 
         if v_strat == "text" or h_strat == "text":
             xt = settings["text_x_tolerance"]
-            if xt == None:
+            if xt is None:
                 xt = settings["text_tolerance"]
             yt = settings["text_y_tolerance"]
-            if yt == None:
+            if yt is None:
                 yt = settings["text_tolerance"]
             words = self.page.extract_words(
                 x_tolerance=xt,
